@@ -20,5 +20,5 @@ big_num.o: big_num.c big_num.h
 main.o: main.c
 	${CXX} ${FLAGS} main.c -o $@
 
-calculator: main.o calc.o parse_tree.o big_num.o
+${PROG_NAME}: main.o calc.o parse_tree.o big_num.o
 	${CXX} -g $^ -o $@

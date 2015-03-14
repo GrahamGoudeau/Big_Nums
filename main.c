@@ -23,6 +23,13 @@ int main(int argc, char *argv[])
         fscanf(stdin, "%s", input);
         big_num_p new_num = parse_big_num(input);
         print_big_num(new_num);
+        fscanf(stdin, "%s", input);
+        printf("\n");
+        big_num_p new_num2 = parse_big_num(input);
+        big_num_p result = add(new_num, new_num2);
+        print_big_num(result);
+        free_big_num(new_num2);
+        free_big_num(result);
         fprintf(stdout, "\n");
         free_big_num(new_num);
         return EXIT_SUCCESS;
