@@ -2,21 +2,26 @@
 #include <stdio.h>
 #include "big_num.h"
 
+typedef signed char digit_type;
 
 const unsigned INT_32_LEN = 32;
 const signed char NUM_DELIM = -1;
 const unsigned INPUT_DELIM = 0;
 
-const unsigned DEC_BASE = 10;
+const digit_type DEC_BASE = 10;
 
-/* FOR NOW: LENGTH OF A NUMBER LIMITED TO UNSIGNED LONG LONG MAX */
+
+/* FOR NOW:
+ * numbers can only be indexed by integers within range
+ * of size_t numbers
+ */
 
 /* DIGITS STORED LITTLE ENDIAN */
 
-/* store each digit in 1 byte, -1 indicating end of representation */
+/* store each digit in 1 byte, NUM_DELIM indicating end of representation */
 struct big_num_s
 {
-        signed char *dig_seq;
+        digit_type *dig_seq;
 };
 
 typedef struct big_num_s big_num_s;
@@ -75,7 +80,7 @@ big_num_p parse_big_num(char *input)
 */
         num_index i;
         for (i = len; i > 0; i--) {
-                unsigned digit = (input[i - 1]) - '0';
+                digit_type digit = (input[i - 1]) - '0';
                 new_num->dig_seq[len - i] = digit;
         }
 
@@ -122,7 +127,6 @@ void print_big_num(big_num_p num)
         print_dig(num, digit);
 }
         
-
 big_num_p expand_big_num(big_num_p old_num)
 {
         num_index i;
@@ -148,6 +152,13 @@ big_num_p expand_big_num(big_num_p old_num)
         return new_num;
 }
 
+void print_all_info(big_num_p num)
+{
+        num_index len = get_num_len(num) + 1;
+        for (num_index i = 0; i < len; i++) 
+                fprintf(stderr, "%d", num->dig_seq[i]);
+        fprintf(stderr, "\n");
+}
 
 big_num_p resize_big_num(big_num_p num, num_index len)
 {
@@ -166,6 +177,7 @@ big_num_p resize_big_num(big_num_p num, num_index len)
         free_big_num(num);
         return resized;
 }
+
 /* Current philosophy: make new big_num for result, so old data preserved */
 big_num_p add(big_num_p operand1, big_num_p operand2)
 {
@@ -175,16 +187,26 @@ big_num_p add(big_num_p operand1, big_num_p operand2)
         /* The maximum new length can be the longest original + 1 (if carry) */
         num_index sum_len = (len1 >= len2) ? len1 + 1 : len2 + 1;
 
-        big_num_p result = init_big_num_len(sum_len);
-        unsigned char carry = 0;
-        for (num_index i = 0; i < sum_len - 1; i++) {
-                unsigned char digit1 = (i >= len1) ? 0 : operand1->dig_seq[i];
-                unsigned char digit2 = (i >= len2) ? 0 : operand2->dig_seq[i];
-                unsigned char sum = digit1 + digit2 + carry;
+        /* changed from sum_len * 2 */
+        big_num_p result = init_big_num_len(sum_len + 1);
+        digit_type carry = 0;
+        num_index i;
+        for (i = 0; i < sum_len - 1; i++) {
+                digit_type digit1 = (i >= len1) ? 0 : operand1->dig_seq[i];
+                digit_type digit2 = (i >= len2) ? 0 : operand2->dig_seq[i];
+                digit_type sum = digit1 + digit2 + carry;
                 carry = (sum >= DEC_BASE) ? 1 : 0;
                 result->dig_seq[i] = (sum % 10);
-                
         }
+        if (carry == 1)
+                result->dig_seq[i] = 1;
+
+        fprintf(stderr, "operand1: ");
+        print_all_info(operand1);
+        fprintf(stderr, "operand2: ");
+        print_all_info(operand2);
+        fprintf(stderr, "result: ");
+        print_all_info(result);
         
         return result;
 }

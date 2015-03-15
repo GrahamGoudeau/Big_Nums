@@ -11,8 +11,8 @@ clean:
 calc.o: calc.c calc.h
 	${CXX} ${FLAGS} calc.c -o $@
 
-parse_tree.o: parse_tree.c parse_tree.h
-	${CXX} ${FLAGS} parse_tree.c -o $@
+parse.o: parse.c parse.h
+	${CXX} ${FLAGS} parse.c -o $@
 
 big_num.o: big_num.c big_num.h
 	${CXX} ${FLAGS} big_num.c -o $@
@@ -20,5 +20,5 @@ big_num.o: big_num.c big_num.h
 main.o: main.c
 	${CXX} ${FLAGS} main.c -o $@
 
-${PROG_NAME}: main.o calc.o parse_tree.o big_num.o
+${PROG_NAME}: main.o calc.o parse.o big_num.o
 	${CXX} -g $^ -o $@
