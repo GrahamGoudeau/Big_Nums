@@ -73,11 +73,11 @@ big_num_p parse_big_num(char *input)
                 len++;
 
         big_num_p new_num;
-        //if (len > INT_32_LEN)
+        if (len >= INT_32_LEN)
                 new_num = init_big_num_len(len*2);
-        /*else
+        else
                 new_num = init_big_num();
-*/
+
         num_index i;
         for (i = len; i > 0; i--) {
                 digit_type digit = (input[i - 1]) - '0';

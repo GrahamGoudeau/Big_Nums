@@ -2,25 +2,12 @@
 
 
 #include <stdio.h>
+#include "parse.h"
 #include "big_num.h"
 int main(int argc, char *argv[])
 {
         (void)argc;(void)argv;
-        /*char c = ' ';
-        char delimiter = '\n';
-        while (c != delimiter) {
-                c = getchar();
-                fprintf(stderr, "%c", c);
-        }
-        */
         /*
-        big_num_p num = init_big_num();
-        print_big_num(num);
-        num = expand_big_num(num);
-        print_big_num(num);
-        printf("\n");
-        free_big_num(num);
-        */
         char input[1000];
         fscanf(stdin, "%s", input);
         big_num_p new_num = parse_big_num(input);
@@ -35,5 +22,9 @@ int main(int argc, char *argv[])
         free_big_num(result);
         free_big_num(new_num2);
         free_big_num(new_num);
+        */
+        char *input = readline(stdin);
+        parse_binary_exp(input); 
+        free(input);
         return EXIT_SUCCESS;
 }
