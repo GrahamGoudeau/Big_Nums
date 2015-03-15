@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include "big_num.h"
 
-typedef size_t num_index;
 
 const unsigned INT_32_LEN = 32;
 const signed char NUM_DELIM = -1;
@@ -61,15 +60,6 @@ num_index get_num_len(big_num_p num)
         return count;
 }
 
-void update_place_value(big_num_p num, num_index place_value, char value)
-{
-        num_index len = get_num_len(num);
-        if (place_value >= len)
-                expand_big_num(num);
-        
-        num->dig_seq[place_value] = value;
-}
-
 big_num_p parse_big_num(char *input)
 {
         /* get length of input to terminating null character */
@@ -77,7 +67,12 @@ big_num_p parse_big_num(char *input)
         while (input[len] != INPUT_DELIM)
                 len++;
 
-        big_num_p new_num = init_big_num_len(len*2);
+        big_num_p new_num;
+        //if (len > INT_32_LEN)
+                new_num = init_big_num_len(len*2);
+        /*else
+                new_num = init_big_num();
+*/
         num_index i;
         for (i = len; i > 0; i--) {
                 unsigned digit = (input[i - 1]) - '0';
@@ -92,8 +87,9 @@ void free_big_num(big_num_p num)
         if (num == NULL)
                 return;
 
-        if (num->dig_seq != NULL)
+        if (num->dig_seq != NULL) {
                 free(num->dig_seq);
+        }
 
         free(num);
 }
@@ -131,55 +127,58 @@ big_num_p expand_big_num(big_num_p old_num)
 {
         num_index i;
         num_index num_len = get_num_len(old_num);
+        num_index new_len = num_len * 2 + 1;
 
-        big_num_p new_num = init_big_num_len(num_len * 2); 
+        big_num_p new_num = init_big_num_len(new_len);
 
         /* copy existing data */
         for (i = 0; i < num_len; i++) {
+                fprintf(stderr, "adding %d\n", old_num->dig_seq[i]);
                 new_num->dig_seq[i] = old_num->dig_seq[i];
         }
+        fprintf(stderr, "after loop:\n");
+        for (i = 0; i < new_len; i++)
+                fprintf(stderr, "%d", new_num->dig_seq[i]);
+        fprintf(stderr, "\n");
 
         /* fill the new big_num with leading zeroes/-1 sentinel */
-        for (i = num_len; i < num_len * 2; i++) {
-                if (i == (num_len * 2) - 1)
-                        new_num->dig_seq[i] = -1;
+        
+        for (i = num_len; i < new_len; i++) {
+                if (i == new_len - 1)
+                        new_num->dig_seq[i] = NUM_DELIM;
                 else new_num->dig_seq[i] = 0;
         }
-
+        
         free_big_num(old_num);
+        fprintf(stderr, "new num size on leaving expand: %zu\n", get_num_len(new_num));
         return new_num;
 }
 
+
+big_num_p resize_big_num(big_num_p num, num_index len)
+{
+        num_index i;
+        num_index old_len = get_num_len(num);
+        if (len < old_len) {
+                fprintf(stderr, "resize: "
+                                "resize length less than original length\n");
+                exit(1);
+        }
+        big_num_p resized = init_big_num_len(len);
+        for (i = 0; i < old_len; i++) {
+                resized->dig_seq[i] = num->dig_seq[i];
+        }
+
+        free_big_num(num);
+        return resized;
+}
 /* Current philosophy: make new big_num for result, so old data preserved */
 big_num_p add(big_num_p operand1, big_num_p operand2)
 {
         num_index len1 = get_num_len(operand1);
         num_index len2 = get_num_len(operand2);
+
+        num_index sum_len = (len1 >= len2) ? len1 + 1 : len2 + 1;
         
-        num_index sum_length = (len1 >= len2) ? len1 : len2;
-        num_index i = 0;
-
-        big_num_p result = init_big_num_len(sum_length * 2); 
-        
-        for (; i < sum_length; i++) {
-                if (i >= len1)
-                        expand_big_num(operand1);
-                if (i >= len2)
-                        expand_big_num(operand2);
-
-                signed char digit1 = operand1->dig_seq[i];
-                signed char digit2 = operand2->dig_seq[i];
-                unsigned char digit_sum = digit1 + digit2;
-
-                /* carry case */
-                if (digit_sum >= DEC_BASE) {
-                        digit_sum = digit_sum % DEC_BASE;
-                        if (i + 1 >= len1)
-                                expand_big_num(operand1);
-                        operand1->dig_seq[i + 1] += 1;
-                }
-                
-                result->dig_seq[i] = digit_sum;
-        }
-        return result;
+        return operand1;
 }

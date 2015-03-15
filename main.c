@@ -19,17 +19,17 @@ int main(int argc, char *argv[])
         print_big_num(num);
         printf("\n");
         free_big_num(num);
+        
         char input[10];
         fscanf(stdin, "%s", input);
         big_num_p new_num = parse_big_num(input);
-        print_big_num(new_num);
         fscanf(stdin, "%s", input);
         printf("\n");
         big_num_p new_num2 = parse_big_num(input);
-        big_num_p result = add(new_num, new_num2);
-        print_big_num(result);
+        new_num2 = expand_big_num(new_num2);
+        new_num = resize_big_num(new_num, 10000);
+        print_big_num(new_num);
         free_big_num(new_num2);
-        free_big_num(result);
         fprintf(stdout, "\n");
         free_big_num(new_num);
         return EXIT_SUCCESS;
