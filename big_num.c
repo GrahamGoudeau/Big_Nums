@@ -133,13 +133,8 @@ big_num_p expand_big_num(big_num_p old_num)
 
         /* copy existing data */
         for (i = 0; i < num_len; i++) {
-                fprintf(stderr, "adding %d\n", old_num->dig_seq[i]);
                 new_num->dig_seq[i] = old_num->dig_seq[i];
         }
-        fprintf(stderr, "after loop:\n");
-        for (i = 0; i < new_len; i++)
-                fprintf(stderr, "%d", new_num->dig_seq[i]);
-        fprintf(stderr, "\n");
 
         /* fill the new big_num with leading zeroes/-1 sentinel */
         
@@ -150,7 +145,6 @@ big_num_p expand_big_num(big_num_p old_num)
         }
         
         free_big_num(old_num);
-        fprintf(stderr, "new num size on leaving expand: %zu\n", get_num_len(new_num));
         return new_num;
 }
 
@@ -178,7 +172,19 @@ big_num_p add(big_num_p operand1, big_num_p operand2)
         num_index len1 = get_num_len(operand1);
         num_index len2 = get_num_len(operand2);
 
+        /* The maximum new length can be the longest original + 1 (if carry) */
         num_index sum_len = (len1 >= len2) ? len1 + 1 : len2 + 1;
+
+        big_num_p result = init_big_num_len(sum_len);
+        unsigned char carry = 0;
+        for (num_index i = 0; i < sum_len - 1; i++) {
+                unsigned char digit1 = (i >= len1) ? 0 : operand1->dig_seq[i];
+                unsigned char digit2 = (i >= len2) ? 0 : operand2->dig_seq[i];
+                unsigned char sum = digit1 + digit2 + carry;
+                carry = (sum >= DEC_BASE) ? 1 : 0;
+                result->dig_seq[i] = (sum % 10);
+                
+        }
         
-        return operand1;
+        return result;
 }

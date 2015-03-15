@@ -13,24 +13,27 @@ int main(int argc, char *argv[])
                 fprintf(stderr, "%c", c);
         }
         */
+        /*
         big_num_p num = init_big_num();
         print_big_num(num);
         num = expand_big_num(num);
         print_big_num(num);
         printf("\n");
         free_big_num(num);
-        
-        char input[10];
+        */
+        char input[1000];
         fscanf(stdin, "%s", input);
         big_num_p new_num = parse_big_num(input);
         fscanf(stdin, "%s", input);
-        printf("\n");
         big_num_p new_num2 = parse_big_num(input);
-        new_num2 = expand_big_num(new_num2);
-        new_num = resize_big_num(new_num, 10000);
-        print_big_num(new_num);
-        free_big_num(new_num2);
+        //new_num = resize_big_num(new_num, 10);
+        big_num_p result;
+        result = add(new_num, new_num2);      
+        (void)result;
+        print_big_num(result);
         fprintf(stdout, "\n");
+        free_big_num(result);
+        free_big_num(new_num2);
         free_big_num(new_num);
         return EXIT_SUCCESS;
 }
