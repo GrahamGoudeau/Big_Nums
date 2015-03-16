@@ -1,5 +1,5 @@
 CXX = clang
-FLAGS= -c -g -Wall -Wextra -Werror -Wfatal-errors -std=c99 -pedantic
+FLAGS= -c -g -O0 -Wall -Wextra -Werror -Wfatal-errors -std=c99 -pedantic
 RM = rm -f
 PROG_NAME = calculator
 

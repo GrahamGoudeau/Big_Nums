@@ -32,6 +32,24 @@ bool is_numeric(char c)
         return ('0' <= c && c <= '9');
 }
 
+/*
+char *get_character(char *input, num_index len)
+{
+        num_index size = len;
+        while (is_numeric(input[size]))
+                size++;
+
+        char new_string[size - len];
+        num_index i;
+        for (i = 0; i < (size - len); i++) 
+                new_string[i] = input[i + len];
+
+        new_string[i] = 0;
+
+        return new_string;
+}
+*/
+
 void parse_binary_exp(char *input)
 {
         num_index len = 0;
@@ -48,6 +66,39 @@ void parse_binary_exp(char *input)
         first_num[i] = 0;
 
         big_num_p operand1 = parse_big_num(first_num);
+        OP_TYPE_e operator;
+        while (!is_numeric(input[len]) && input[len] != '\n') {
+                switch (input[len]) {
+                        case '+':
+                                operator = ADD;
+                                break;
+                        case '-':
+                                operator = SUB;
+                                break;
+                        case '*':
+                                operator = MULT;
+                                break;
+                        default:
+                                break;
+                }
+                len++;
+        }
+        if (input[len] == '\n') return;
+
+        num_index second_start = len;
+        while (is_numeric(input[len])) 
+                len++;
+
+        char second_num[(len - second_start) + 1];
+        for (i = 0; i < len - second_start; i++)
+                //if (input[i + second_start] != '\n')
+                        second_num[i] = input[i + second_start];
+
+        second_num[i] = 0;
+        big_num_p operand2 = parse_big_num(second_num);
         
+        print_big_num(operand2);
+        fprintf(stdout, "\n");
         free_big_num(operand1);
+        free_big_num(operand2);
 }
