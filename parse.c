@@ -48,7 +48,6 @@ void parse_binary_exp(char *input)
         first_num[i] = 0;
 
         big_num_p operand1 = parse_big_num(first_num);
-
         
         free_big_num(operand1);
 }

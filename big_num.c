@@ -34,7 +34,7 @@ big_num_p init_big_num(void)
         unsigned i;
         for (i = 0; i < INT_32_LEN; i++) {
                 if (i == INT_32_LEN - 1)
-                        new_num->dig_seq[i] = -1;
+                        new_num->dig_seq[i] = NUM_DELIM;
                 else new_num->dig_seq[i] = 0;
         }
 
@@ -127,30 +127,6 @@ void print_big_num(big_num_p num)
         print_dig(num, digit);
 }
         
-big_num_p expand_big_num(big_num_p old_num)
-{
-        num_index i;
-        num_index num_len = get_num_len(old_num);
-        num_index new_len = num_len * 2 + 1;
-
-        big_num_p new_num = init_big_num_len(new_len);
-
-        /* copy existing data */
-        for (i = 0; i < num_len; i++) {
-                new_num->dig_seq[i] = old_num->dig_seq[i];
-        }
-
-        /* fill the new big_num with leading zeroes/-1 sentinel */
-        
-        for (i = num_len; i < new_len; i++) {
-                if (i == new_len - 1)
-                        new_num->dig_seq[i] = NUM_DELIM;
-                else new_num->dig_seq[i] = 0;
-        }
-        
-        free_big_num(old_num);
-        return new_num;
-}
 
 void print_all_info(big_num_p num)
 {
@@ -160,23 +136,6 @@ void print_all_info(big_num_p num)
         fprintf(stderr, "\n");
 }
 
-big_num_p resize_big_num(big_num_p num, num_index len)
-{
-        num_index i;
-        num_index old_len = get_num_len(num);
-        if (len < old_len) {
-                fprintf(stderr, "resize: "
-                                "resize length less than original length\n");
-                exit(1);
-        }
-        big_num_p resized = init_big_num_len(len);
-        for (i = 0; i < old_len; i++) {
-                resized->dig_seq[i] = num->dig_seq[i];
-        }
-
-        free_big_num(num);
-        return resized;
-}
 
 /* Current philosophy: make new big_num for result, so old data preserved */
 big_num_p add(big_num_p operand1, big_num_p operand2)

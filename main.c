@@ -22,9 +22,9 @@ int main(int argc, char *argv[])
         free_big_num(result);
         free_big_num(new_num2);
         free_big_num(new_num);
-        */
-        char *input = readline(stdin);
-        parse_binary_exp(input); 
-        free(input);
+        */ 
+        char *new_input = readline(stdin);
+        parse_binary_exp(new_input); 
+        free(new_input);
         return EXIT_SUCCESS;
 }
