@@ -1,5 +1,3 @@
+#include "calc.h"
 
-int parse_char(char c)
-{
-        return c - '0';
-}
+int calc;

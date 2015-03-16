@@ -1,7 +1,9 @@
 #ifndef PARSE_H
 #define PARSE_H
 
-typedef enum {ADD, SUB, MULT} OP_TYPE_e;
+#include "big_num.h"
+
+typedef enum {ADD, SUB, MULT, NIL} OP_TYPE_e;
 
 struct parse_tree_s;
 typedef struct parse_tree_s *parse_tree_p;
@@ -10,5 +12,6 @@ typedef struct parse_tree_s *parse_tree_p;
 extern char *readline(FILE *file);
 
 /* given input from readline, parse it for two big_nums */
-extern void parse_binary_exp(char *input);
+extern big_num_p parse_binary_exp(char *input);
+
 #endif

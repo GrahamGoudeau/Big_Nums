@@ -160,12 +160,5 @@ big_num_p add(big_num_p operand1, big_num_p operand2)
         if (carry == 1)
                 result->dig_seq[i] = 1;
 
-        fprintf(stderr, "operand1: ");
-        print_all_info(operand1);
-        fprintf(stderr, "operand2: ");
-        print_all_info(operand2);
-        fprintf(stderr, "result: ");
-        print_all_info(result);
-        
         return result;
 }

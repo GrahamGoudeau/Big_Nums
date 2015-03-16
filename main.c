@@ -24,7 +24,10 @@ int main(int argc, char *argv[])
         free_big_num(new_num);
         */ 
         char *new_input = readline(stdin);
-        parse_binary_exp(new_input); 
+        big_num_p result = parse_binary_exp(new_input); 
+        print_big_num(result);
+        fprintf(stdout, "\n");
+        free_big_num(result);
         free(new_input);
         return EXIT_SUCCESS;
 }

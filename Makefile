@@ -1,5 +1,6 @@
 CXX = clang
-FLAGS= -c -g -O0 -Wall -Wextra -Werror -Wfatal-errors -std=c99 -pedantic
+OPTIM = -O0
+FLAGS= -c -g ${OPTIM} -Wall -Wextra -Werror -Wfatal-errors -std=c99 -pedantic
 RM = rm -f
 PROG_NAME = calculator
 
