@@ -2,6 +2,7 @@ Big_Nums
 ========
 
 Author: Graham Goudeau
+----------------------
 
 An implementation of big nums, with arbitrary precision arithmetic.  This is
 accomplished by storing a decimal number in a dynamic array structure, where
