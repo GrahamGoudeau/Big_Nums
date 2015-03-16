@@ -12,8 +12,7 @@ const digit_type DEC_BASE = 10;
 
 
 /* FOR NOW:
- * numbers can only be indexed by integers within range
- * of size_t numbers
+ * numbers can only be indexed by numbers within size_t 
  */
 
 /* DIGITS STORED LITTLE ENDIAN */
