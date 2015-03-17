@@ -39,6 +39,10 @@ bool is_numeric(char c)
 char *get_number(char *input, num_index len)
 {
         num_index size = len;
+        while (input[size] == ' ')
+                size++;
+        if (input[size] == '-')
+                size++;
         while (is_numeric(input[size]))
                 size++;
 
@@ -64,10 +68,12 @@ big_num_p evaluate(big_num_p operand1, big_num_p operand2, OP_TYPE_e operator)
 
 }
 
+/* might be deprecated */
 OP_TYPE_e get_operator(char *input)
 {
         if (input == NULL) return NIL;
         num_index index = 0;
+        if (input[index] == '-') index++;
         OP_TYPE_e operator = NIL;
         while (input[index] != '\n') {
                 switch (input[index]) {
@@ -90,6 +96,46 @@ OP_TYPE_e get_operator(char *input)
         }
         return operator;
 }
+
+bool has_operator(char *input, OP_TYPE_e op, num_index start, num_index end)
+{
+        for (num_index i = start; i <= end; i++) {
+                switch(input[i]) {
+                        case '+':
+                                if (op == ADD) return true;
+                                break;
+                        case '-':
+                                if (op == SUB) return true;
+                                break;
+                        case '*':
+                                if (op == MULT) return true;
+                        default:
+                                if (op == NIL) continue;
+                }
+        }
+        if (op == NIL) return true;
+        return false;
+}
+
+/*
+big_num_p parse_len(char *input, num_index start, num_index end)
+{
+        for (OP_TYPE_e op = ADD; op <= NIL; op++) {
+                
+        }
+}
+*/
+
+/*
+big_num_p parse_input(char *input)
+{
+        num_index counter = 0;
+        while (input[counter] != '\n')
+                counter++;
+
+        return parse_len(input, 0, counter);
+}
+*/
 
 big_num_p parse_binary_exp(char *input)
 {
