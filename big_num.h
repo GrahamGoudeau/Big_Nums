@@ -18,7 +18,9 @@ extern void print_big_num(big_num_p num);
 
 extern void free_big_num(big_num_p num);
 
-/* returns a new big_num_p holding result of addition */
+/* Arithmetic functions return new big_num_p with result of calculation 
+ * They have the form add(op1, op2) = op1 + op2 and sub(op1, op2) = op1 - op2
+ */
 extern big_num_p add(big_num_p operand1, big_num_p operand2);
 extern big_num_p subtract(big_num_p operand1, big_num_p operand2);
 
