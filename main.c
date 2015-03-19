@@ -15,8 +15,8 @@ int main(int argc, char *argv[])
         big_num_p new_num2 = parse_big_num(input);
         //new_num = resize_big_num(new_num, 10);
         big_num_p result;
-        //result = add(new_num, new_num2);      
-        result = subtract(new_num, new_num2);
+        result = add(new_num, new_num2);      
+        //result = subtract(new_num, new_num2);
         print_all_info(result);
         print_big_num(result);
         fprintf(stdout, "\n");

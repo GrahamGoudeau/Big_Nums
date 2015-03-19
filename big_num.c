@@ -192,27 +192,27 @@ big_num_p unsigned_add(big_num_p operand1, big_num_p operand2)
 
 big_num_p signed_add(big_num_p operand1, big_num_p operand2)
 {
-        fprintf(stdout, "in signed add\n");
-        fprintf(stdout, "op1: ");
-        print_big_num(operand1);
-        fprintf(stdout, "\nop2: ");
-        print_big_num(operand2);
-        fprintf(stdout, "\n");
+        big_num_p result;
+        /* - - */
         if ((!operand1->is_positive) && (!operand2->is_positive)) {
-                big_num_p result = unsigned_add(operand1, operand2);
+                result = unsigned_add(operand1, operand2);
                 result->is_positive = false;
-                return result;
         }
 
-        else if (operand1->is_positive)
-                return subtract(operand1, operand2);
+        /* + - */
+        else if (operand1->is_positive && !operand2->is_positive) {
+                operand2->is_positive = true;
+                result = subtract(operand1, operand2);
+                operand2->is_positive = false;
+        }
 
-        /* else operand2 is positive */
+        /* - + */
         else {
-                fprintf(stdout, "op2 positive\n");
-                //return subtract(operand2, operand1);
-                return subtract(operand1, operand2);
+                operand1->is_positive = true;
+                result = subtract(operand2, operand1);
+                operand1->is_positive = false;
         }
+        return result;
 }
 
 big_num_p add(big_num_p operand1, big_num_p operand2)
@@ -251,52 +251,27 @@ big_num_p unsigned_subtract(big_num_p operand1, big_num_p operand2)
 
 big_num_p signed_subtract(big_num_p operand1, big_num_p operand2)
 {
-        /*
         big_num_p result;
-        fprintf(stderr, "%d %d\n", operand1->is_positive, operand2->is_positive);
-        if (!operand1->is_positive && !operand2->is_positive) {
-                fprintf(stderr, "first option\n");
-                operand2->is_positive = true;
-                result = add(operand1, operand2);
-                operand2->is_positive = false;
-        }
-        else if (!operand1->is_positive) {
-                fprintf(stderr, "second\n");
-                operand1->is_positive = true;
-                result = add(operand1, operand2);
-                result->is_positive = false;
-                operand1->is_positive = true;
-        }
-        //else if (operand1->is_positive && !operand2->is_positive) {
-        else {
-                fprintf(stderr, "third option\n");
-                fprintf(stdout, "third option with ");
-                print_big_num(operand1);
-                fprintf(stdout, " ");
-                print_big_num(operand2);
-                fprintf(stdout, "\n");
-                operand2->is_positive = true;
-                result = add(operand1, operand2);
-                operand2->is_positive = false;
-        }
-        return result;
-        */
-        big_num_p result;
+        /* + - */
         if (operand1->is_positive && !(operand2->is_positive)) {
                 operand2->is_positive = true;
                 result = add(operand1, operand2);
                 operand2->is_positive = false;
         }
-        if (!(operand1->is_positive) && operand2->is_positive) {
+        /* - + */
+        else if ((!(operand1->is_positive)) && (operand2->is_positive)) {
                 operand1->is_positive = true;
                 result = add(operand1, operand2);
                 operand1->is_positive = false;
                 result->is_positive = false;
         }
         /* else both negative */
+        /* - - */
         else {
+                operand1->is_positive = true;
                 operand2->is_positive = true;
-                result = subtract(operand1, operand2);
+                result = subtract(operand2, operand1);
+                operand1->is_positive = false;
                 operand2->is_positive = false;
         }
         return result;
@@ -305,11 +280,6 @@ big_num_p signed_subtract(big_num_p operand1, big_num_p operand2)
 /* assume operand2 <= operand1 */
 big_num_p subtract(big_num_p operand1, big_num_p operand2)
 {
-        fprintf(stdout, "calling subtract with ");
-        print_big_num(operand1);
-        fprintf(stdout, " ");
-        print_big_num(operand2);
-        fprintf(stdout, "\n");
         if (operand1->is_positive && operand2->is_positive)
                 return unsigned_subtract(operand1, operand2);
         return signed_subtract(operand1, operand2);
