@@ -285,9 +285,27 @@ big_num_p subtract(big_num_p operand1, big_num_p operand2)
         return signed_subtract(operand1, operand2);
 }
 
+big_num_p multiply(big_num_p operand1, big_num_p operand2)
+{
+        num_index len1 = get_num_len(operand1);
+        num_index len2 = get_num_len(operand2);
+        bool op1_pos = operand1->is_positive;
+        bool op2_pos = operand2->is_positive;
+
+        /* XOR the positive indicators from the operands */
+        bool result_positive = op1_pos ? !op2_pos : op2_pos;
+        
+        /* max length of mult result is log(len1) + log(len2) (+ extra space) */
+        num_index mult_len = len1 + len2 + 1;
+        big_num_p result = init_big_num_len(mult_len); 
+        num_index i;
+        (void)i;(void)result_positive;return result;
+}
+
 /* return true if operand1 <= operand2, false otherwise */
 bool leq(big_num_p operand1, big_num_p operand2)
 {
+        /*
         bool is_leq = 1, nleq = 0;
         num_index len1 = get_num_len(operand1);
         num_index len2 = get_num_len(operand2);
@@ -307,7 +325,65 @@ bool leq(big_num_p operand1, big_num_p operand2)
         if (dig1 > dig2) return nleq;
 
         return is_leq;
-         
+        */
+        num_index storage_len1 = get_num_len(operand1) - 1;
+        num_index storage_len2 = get_num_len(operand2) - 1;
+        
+        num_index index = storage_len1;
+        while (operand1->dig_seq[index] == 0 && index != 0)
+                index--;
+
+        num_index numeric_len1 = index + 1;
+        index = storage_len2;
+
+        while (operand2->dig_seq[index] == 0 && index != 0)
+                index--;
+
+        num_index numeric_len2 = index + 1;
+        if (numeric_len1 != numeric_len2) return numeric_len1 < numeric_len2;
+
+        index = numeric_len1;
+        while (index != 0) {
+                if (operand1->dig_seq[index] > operand2->dig_seq[index]) 
+                        return false;
+                index--;
+        }
+        if (operand1->dig_seq[index] > operand2->dig_seq[index]) 
+                return false;
+        
+        return true;
+}
+
+bool eq(big_num_p operand1, big_num_p operand2)
+{
+        return leq(operand1, operand2) && leq(operand2, operand1);
+}
+
+big_num_p copy_big_num(big_num_p orig)
+{
+        num_index len = get_num_len(orig);
+        big_num_p copy = init_big_num_len(len + 1);
+        num_index i;
+        for (i = 0; i < len + 1; i++)
+                copy->dig_seq[i] = orig->dig_seq[i];
+
+        return copy;
+}
+
+void for_loop(big_num_p start, big_num_p incr, big_num_p end, 
+              void loop_body(big_num_p i, void *cl), void *cl)
+{
+        big_num_p i = copy_big_num(start);
+
+        while (!eq(i, end)) {
+                loop_body(i, cl);        
+        
+                big_num_p new_i = add(i, incr);
+                free_big_num(i);
+                i = new_i;
+        } 
+
+        free_big_num(i);
 }
 
 /* mod the digit by DEC_BASE */
