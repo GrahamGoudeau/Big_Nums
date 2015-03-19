@@ -36,6 +36,4 @@ extern void for_loop(big_num_p start, big_num_p incr, big_num_p end,
 
 
 
-extern void print_all_info(big_num_p num);
-
 #endif

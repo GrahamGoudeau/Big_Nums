@@ -302,47 +302,29 @@ big_num_p multiply(big_num_p operand1, big_num_p operand2)
         (void)i;(void)result_positive;return result;
 }
 
+num_index first_nonzero(big_num_p operand, num_index start)
+{
+        num_index index = start;
+        while (operand->dig_seq[index] == 0 && index != 0)
+                index--;
+
+        return index + 1;
+}
+
 /* return true if operand1 <= operand2, false otherwise */
 bool leq(big_num_p operand1, big_num_p operand2)
 {
-        /*
-        bool is_leq = 1, nleq = 0;
-        num_index len1 = get_num_len(operand1);
-        num_index len2 = get_num_len(operand2);
-        if (len1 < len2) return is_leq;
-        else if (len1 > len2) return nleq;
-        
-        digit_type dig1, dig2;
-        while (len1 != 0)  {
-                dig1 = operand1->dig_seq[len1];
-                dig2 = operand2->dig_seq[len1];
-                if (dig1 > dig2) return nleq;
-                if (dig1 < dig2) return is_leq;
-                len1--;
-        }
-        dig1 = operand1->dig_seq[len1];
-        dig2 = operand2->dig_seq[len1];
-        if (dig1 > dig2) return nleq;
-
-        return is_leq;
-        */
         num_index storage_len1 = get_num_len(operand1) - 1;
         num_index storage_len2 = get_num_len(operand2) - 1;
         
-        num_index index = storage_len1;
-        while (operand1->dig_seq[index] == 0 && index != 0)
-                index--;
+        /* find numerical length (disregarding extra storage) of each operand */
+        num_index numeric_len1 = first_nonzero(operand1, storage_len1);
+        num_index numeric_len2 = first_nonzero(operand2, storage_len2);
 
-        num_index numeric_len1 = index + 1;
-        index = storage_len2;
-
-        while (operand2->dig_seq[index] == 0 && index != 0)
-                index--;
-
-        num_index numeric_len2 = index + 1;
+        /* check the lengths of both operands */
         if (numeric_len1 != numeric_len2) return numeric_len1 < numeric_len2;
 
-        index = numeric_len1;
+        num_index index = numeric_len1;
         while (index != 0) {
                 if (operand1->dig_seq[index] > operand2->dig_seq[index]) 
                         return false;
