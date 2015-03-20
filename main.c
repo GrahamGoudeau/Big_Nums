@@ -23,9 +23,8 @@ int main(int argc, char *argv[])
         big_num_p new_num2 = parse_big_num(input);
         //new_num = resize_big_num(new_num, 10);
         big_num_p result;
-        result = add(new_num, new_num2);      
-        //result = subtract(new_num, new_num2);
-        print_all_info(result);
+        //result = add(new_num, new_num2);      
+        result = subtract(new_num, new_num2);
         print_big_num(result);
         fprintf(stdout, "\n");
         free_big_num(result);
@@ -43,6 +42,7 @@ int main(int argc, char *argv[])
         for_loop(start, incr, end, loop_body, NULL);
         free_big_num(start);
         free_big_num(incr);
+        end = trim_storage(end);
         free_big_num(end);
         /* 
         char *new_input = readline(stdin);

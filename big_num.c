@@ -4,12 +4,15 @@
 #include "big_num.h"
 
 typedef signed char digit_type;
+const digit_type DEC_BASE = 10;
+
+#define MOD(x) (x % DEC_BASE < 0) ? (x % DEC_BASE) + DEC_BASE : x % DEC_BASE
+#define XOR(A,B) A ? !B : B
 
 const unsigned INT_32_LEN = 32;
 const signed char NUM_DELIM = -1;
 const unsigned INPUT_DELIM = 0;
 
-const digit_type DEC_BASE = 10;
 
 
 /* FOR NOW:
@@ -27,7 +30,6 @@ struct big_num_s
 
 typedef struct big_num_s big_num_s;
 
-digit_type mod(digit_type dig);
 
 big_num_p init_big_num(void)
 {
@@ -47,6 +49,8 @@ big_num_p init_big_num(void)
 
 big_num_p init_big_num_len(num_index num_len)
 {
+        // take this out?
+        num_len += 1;
         big_num_p new_num = malloc(sizeof(big_num_s));
         new_num->dig_seq = malloc(num_len * sizeof(char));
 
@@ -68,6 +72,23 @@ num_index get_num_len(big_num_p num)
                 count++;
 
         return count;
+}
+
+big_num_p trim_storage(big_num_p num)
+{
+        num_index stor_len = get_num_len(num);
+        while (num->dig_seq[stor_len] == NUM_DELIM || 
+                num->dig_seq[stor_len] == 0)
+                stor_len--;
+        
+        big_num_p trimmed = init_big_num_len(stor_len + 1);
+        while (stor_len != 0) {
+                trimmed->dig_seq[stor_len] = num->dig_seq[stor_len];
+                stor_len--;
+        }
+        trimmed->dig_seq[stor_len] = num->dig_seq[stor_len];
+        free_big_num(num);
+        return trimmed;
 }
 
 big_num_p parse_big_num(char *input)
@@ -157,6 +178,7 @@ void print_all_info(big_num_p num)
 }
 
 big_num_p subtract(big_num_p, big_num_p);
+num_index first_nonzero(big_num_p, num_index);
 
 big_num_p unsigned_add(big_num_p operand1, big_num_p operand2)
 {
@@ -217,10 +239,13 @@ big_num_p signed_add(big_num_p operand1, big_num_p operand2)
 
 big_num_p add(big_num_p operand1, big_num_p operand2)
 {
+        big_num_p result;
         if ((!operand1->is_positive) || (!operand2->is_positive))
-                return signed_add(operand1, operand2);
+                result = signed_add(operand1, operand2);
 
-        else return unsigned_add(operand1, operand2);
+        else result = unsigned_add(operand1, operand2);
+        result = trim_storage(result);
+        return result;
 }
 
 big_num_p unsigned_subtract(big_num_p operand1, big_num_p operand2)
@@ -241,7 +266,7 @@ big_num_p unsigned_subtract(big_num_p operand1, big_num_p operand2)
         for (i = 0; i < sub_len - 1; i++) {
                 digit_type digit1 = (i >= len1) ? 0 : operand1->dig_seq[i];
                 digit_type digit2 = (i >= len2) ? 0 : operand2->dig_seq[i];
-                digit_type sub = mod(digit1 - digit2);        
+                digit_type sub = MOD(digit1 - digit2);        
                 result->dig_seq[i] = sub;
                 if (digit2 > digit1)
                         operand1->dig_seq[i + 1] -= 1;
@@ -326,6 +351,12 @@ bool leq(big_num_p operand1, big_num_p operand2)
 
         num_index index = numeric_len1;
         while (index != 0) {
+                if (operand1->dig_seq[index] == NUM_DELIM ||
+                    operand2->dig_seq[index] == NUM_DELIM) {
+                        index--;
+                        continue;
+                }
+
                 if (operand1->dig_seq[index] > operand2->dig_seq[index]) 
                         return false;
                 index--;
@@ -368,9 +399,10 @@ void for_loop(big_num_p start, big_num_p incr, big_num_p end,
         free_big_num(i);
 }
 
-/* mod the digit by DEC_BASE */
+/*
 digit_type mod(digit_type dig)
 {
         digit_type result = dig % DEC_BASE;
         return (result < 0) ? result + DEC_BASE : result;
 }
+*/
