@@ -4,9 +4,9 @@
 #include "big_num.h"
 
 typedef signed char digit_type;
-const digit_type DEC_BASE = 10;
+const digit_type BASE = 10;
 
-#define MOD(x) (x % DEC_BASE < 0) ? (x % DEC_BASE) + DEC_BASE : x % DEC_BASE
+#define MOD(x) (x % BASE < 0) ? (x % BASE) + BASE : x % BASE
 #define XOR(A,B) A ? !B : B
 #define NUM_RANGE(c) (c >= '0' && c <= '9') ? true : false
 
@@ -14,11 +14,9 @@ const unsigned INT_32_LEN = 32;
 const signed char NUM_DELIM = -1;
 const unsigned INPUT_DELIM = 0;
 
+const char *non_num_error = "PARSE GOT NON NUMERIC INPUT\n";
+const char *out_of_base_error = "PARSE GOT DIGIT OUTSIDE OF BASE\n";
 
-
-/* FOR NOW:
- * numbers can only be indexed by numbers within size_t 
- */
 
 /* DIGITS STORED LITTLE ENDIAN */
 
@@ -32,6 +30,7 @@ struct big_num_s
 typedef struct big_num_s big_num_s;
 
 
+/*
 big_num_p init_big_num(void)
 {
         big_num_p new_num = malloc(sizeof(big_num_s));
@@ -47,11 +46,13 @@ big_num_p init_big_num(void)
 
         return new_num;
 }
+*/
 
 big_num_p init_big_num_len(num_index num_len)
 {
-        // take this out?
+        /* accomodate for NUM_DELIM at end of representation */
         num_len += 1;
+
         big_num_p new_num = malloc(sizeof(big_num_s));
         new_num->dig_seq = malloc(num_len * sizeof(char));
 
@@ -113,13 +114,18 @@ big_num_p parse_big_num(char *input)
         big_num_p new_num = init_big_num_len(len + 1);
         num_index i;
         for (i = len; i > 0; i--) {
-                if (!NUM_RANGE(input[i - 1])) {
-                        fprintf(stderr, "PARSE GOT NON NUMERIC INPUT\n");
+                char cur = input[i - 1];
+                if (cur != '-' && !NUM_RANGE(cur)) {
+                        fprintf(stderr, "%s", non_num_error);
                         exit(1);
                 }
 
-                if (input[i - 1] != '-') {
-                        digit_type digit = (input[i - 1]) - '0';
+                if (cur != '-') {
+                        digit_type digit = cur - '0';
+                        if (digit >= BASE) {
+                                fprintf(stderr, "%s", out_of_base_error);
+                                exit(1);
+                        }
                         new_num->dig_seq[len - i] = digit;
                 }
         }
@@ -201,12 +207,14 @@ big_num_p unsigned_add(big_num_p operand1, big_num_p operand2)
                 digit_type digit2 = (i >= len2) ? 0 : operand2->dig_seq[i];
 
                 /* add the digits and any existing carry bit */
-                digit_type sum = digit1 + digit2 + carry;
+                //digit_type sum = digit1 + digit2 + carry;
+                digit_type sum = MOD(digit1 + digit2 + carry);
 
                 /* reset carry bit if necessary */
-                carry = (sum >= DEC_BASE) ? 1 : 0;
+                carry = (sum >= BASE) ? 1 : 0;
 
-                result->dig_seq[i] = (sum % 10);
+                //result->dig_seq[i] = (sum % 10);
+                result->dig_seq[i] = sum % BASE;
         }
         /* if we have a carry left over, add it in the most significant place */
         if (carry == 1)
@@ -410,7 +418,7 @@ void for_loop(big_num_p start, big_num_p incr, big_num_p end,
 /*
 digit_type mod(digit_type dig)
 {
-        digit_type result = dig % DEC_BASE;
-        return (result < 0) ? result + DEC_BASE : result;
+        digit_type result = dig % BASE;
+        return (result < 0) ? result + BASE : result;
 }
 */

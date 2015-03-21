@@ -11,7 +11,7 @@ typedef struct big_num_s *big_num_p;
 
 /* parse a single big_num from string input with null terminating character; 
  * expects all-numeric input; if non-numeric input received, 
- * prints error to stderr and calls exit(1)
+ * prints error to stderr and calls exit(1).  Can accept bases 
  */
 extern big_num_p parse_big_num(char *input);
 

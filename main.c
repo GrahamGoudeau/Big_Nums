@@ -2,6 +2,7 @@
 
 
 #include <stdio.h>
+#include <limits.h>
 #include "parse.h"
 #include "big_num.h"
 
