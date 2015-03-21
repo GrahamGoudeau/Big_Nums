@@ -8,6 +8,7 @@
 void loop_body(big_num_p i, void *cl)
 {
         (void)cl;
+        print_all_info(i);
         print_big_num(i);
 }
 
@@ -16,7 +17,7 @@ int main(int argc, char *argv[])
         (void)argc;(void)argv;
          
         char input[1000];
-        /*
+        
         fscanf(stdin, "%s", input);
         big_num_p new_num = parse_big_num(input);
         fscanf(stdin, "%s", input);
@@ -26,12 +27,11 @@ int main(int argc, char *argv[])
         //result = add(new_num, new_num2);      
         result = subtract(new_num, new_num2);
         print_big_num(result);
-        fprintf(stdout, "\n");
         free_big_num(result);
         free_big_num(new_num2);
         free_big_num(new_num);
-        */
-
+        
+        /*
         fprintf(stderr, "i start: \n");
         fscanf(stdin, "%s", input);
         big_num_p start = parse_big_num(input);
@@ -44,6 +44,7 @@ int main(int argc, char *argv[])
         free_big_num(incr);
         end = trim_storage(end);
         free_big_num(end);
+        */
         /* 
         char *new_input = readline(stdin);
         big_num_p result = parse_binary_exp(new_input); 

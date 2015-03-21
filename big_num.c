@@ -82,6 +82,8 @@ big_num_p trim_storage(big_num_p num)
                 stor_len--;
         
         big_num_p trimmed = init_big_num_len(stor_len + 1);
+        trimmed->is_positive = num->is_positive;
+
         while (stor_len != 0) {
                 trimmed->dig_seq[stor_len] = num->dig_seq[stor_len];
                 stor_len--;
@@ -106,12 +108,14 @@ big_num_p parse_big_num(char *input)
         while (input[len] != INPUT_DELIM)
                 len++;
 
-        big_num_p new_num;
+        //big_num_p new_num;
+        /*
         if (len >= INT_32_LEN)
                 new_num = init_big_num_len(len*2);
         else
                 new_num = init_big_num();
-
+        */
+        big_num_p new_num = init_big_num_len(len + 1);
         num_index i;
         for (i = len; i > 0; i--) {
                 if (input[i - 1] != '-') {
@@ -305,9 +309,13 @@ big_num_p signed_subtract(big_num_p operand1, big_num_p operand2)
 /* assume operand2 <= operand1 */
 big_num_p subtract(big_num_p operand1, big_num_p operand2)
 {
+        big_num_p result;
         if (operand1->is_positive && operand2->is_positive)
-                return unsigned_subtract(operand1, operand2);
-        return signed_subtract(operand1, operand2);
+                result = unsigned_subtract(operand1, operand2);
+        else result = signed_subtract(operand1, operand2);
+
+        result = trim_storage(result);
+        return result;
 }
 
 big_num_p multiply(big_num_p operand1, big_num_p operand2)
