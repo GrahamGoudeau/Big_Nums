@@ -8,7 +8,6 @@
 void loop_body(big_num_p i, void *cl)
 {
         (void)cl;
-        print_all_info(i);
         print_big_num(i);
 }
 

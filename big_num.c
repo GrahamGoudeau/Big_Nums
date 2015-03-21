@@ -8,6 +8,7 @@ const digit_type DEC_BASE = 10;
 
 #define MOD(x) (x % DEC_BASE < 0) ? (x % DEC_BASE) + DEC_BASE : x % DEC_BASE
 #define XOR(A,B) A ? !B : B
+#define NUM_RANGE(c) (c >= '0' && c <= '9') ? true : false
 
 const unsigned INT_32_LEN = 32;
 const signed char NUM_DELIM = -1;
@@ -99,6 +100,7 @@ big_num_p parse_big_num(char *input)
         num_index len = 0;
         while (input[len] == ' ')
                 len++;
+
         bool is_positive = true;
         if (input[len] == '-') {
                 is_positive = false;
@@ -108,16 +110,14 @@ big_num_p parse_big_num(char *input)
         while (input[len] != INPUT_DELIM)
                 len++;
 
-        //big_num_p new_num;
-        /*
-        if (len >= INT_32_LEN)
-                new_num = init_big_num_len(len*2);
-        else
-                new_num = init_big_num();
-        */
         big_num_p new_num = init_big_num_len(len + 1);
         num_index i;
         for (i = len; i > 0; i--) {
+                if (!NUM_RANGE(input[i - 1])) {
+                        fprintf(stderr, "PARSE GOT NON NUMERIC INPUT\n");
+                        exit(1);
+                }
+
                 if (input[i - 1] != '-') {
                         digit_type digit = (input[i - 1]) - '0';
                         new_num->dig_seq[len - i] = digit;
