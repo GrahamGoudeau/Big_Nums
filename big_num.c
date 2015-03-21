@@ -30,24 +30,6 @@ struct big_num_s
 typedef struct big_num_s big_num_s;
 
 
-/*
-big_num_p init_big_num(void)
-{
-        big_num_p new_num = malloc(sizeof(big_num_s));
-        new_num->dig_seq = malloc(INT_32_LEN * sizeof(char));
-
-        unsigned i;
-        for (i = 0; i < INT_32_LEN; i++) {
-                if (i == INT_32_LEN - 1)
-                        new_num->dig_seq[i] = NUM_DELIM;
-                else new_num->dig_seq[i] = 0;
-        }
-        new_num->is_positive = true;
-
-        return new_num;
-}
-*/
-
 big_num_p init_big_num_len(num_index num_len)
 {
         /* accomodate for NUM_DELIM at end of representation */
@@ -385,7 +367,31 @@ bool leq(big_num_p operand1, big_num_p operand2)
 
 bool eq(big_num_p operand1, big_num_p operand2)
 {
-        return leq(operand1, operand2) && leq(operand2, operand1);
+        //return leq(operand1, operand2) && leq(operand2, operand1);
+        num_index storage_len1 = get_num_len(operand1) - 1;
+        num_index storage_len2 = get_num_len(operand2) - 1;
+
+        num_index num_len1 = first_nonzero(operand1, storage_len1);
+        num_index num_len2 = first_nonzero(operand2, storage_len2);
+        
+        if (num_len1 != num_len2) return false;
+
+        num_index index = num_len1;
+        while (index != 0) {
+                if (operand1->dig_seq[index] == NUM_DELIM || 
+                    operand2->dig_seq[index] == NUM_DELIM) {
+                        index--;
+                        continue;
+                }
+        
+                if (operand1->dig_seq[index] != operand2->dig_seq[index])
+                        return false;
+                index--;
+        } 
+        if (operand1->dig_seq[index] != operand2->dig_seq[index])
+                return false;
+
+        return true;
 }
 
 big_num_p copy_big_num(big_num_p orig)

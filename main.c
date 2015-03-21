@@ -9,7 +9,10 @@
 void loop_body(big_num_p i, void *cl)
 {
         (void)cl;
-        print_big_num(i);
+        //print_big_num(i);
+        //print_all_info(i);
+        (void)i;
+        //print_big_num(i);
 }
 
 int main(int argc, char *argv[])
@@ -18,6 +21,7 @@ int main(int argc, char *argv[])
          
         char input[1000];
         
+        /*
         fscanf(stdin, "%s", input);
         big_num_p new_num = parse_big_num(input);
         fscanf(stdin, "%s", input);
@@ -30,8 +34,7 @@ int main(int argc, char *argv[])
         free_big_num(result);
         free_big_num(new_num2);
         free_big_num(new_num);
-        
-        /*
+        */
         fprintf(stderr, "i start: \n");
         fscanf(stdin, "%s", input);
         big_num_p start = parse_big_num(input);
@@ -42,9 +45,7 @@ int main(int argc, char *argv[])
         for_loop(start, incr, end, loop_body, NULL);
         free_big_num(start);
         free_big_num(incr);
-        end = trim_storage(end);
         free_big_num(end);
-        */
         /* 
         char *new_input = readline(stdin);
         big_num_p result = parse_binary_exp(new_input); 

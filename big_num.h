@@ -39,4 +39,5 @@ extern bool eq(big_num_p operand1, big_num_p operand2);
 extern void for_loop(big_num_p start, big_num_p incr, big_num_p end, 
                      void loop_body(big_num_p i, void *cl), void *cl);
 
+extern void print_all_info(big_num_p);
 #endif
