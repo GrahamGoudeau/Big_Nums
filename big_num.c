@@ -3,12 +3,13 @@
 #include <stdbool.h>
 #include "big_num.h"
 
+typedef size_t num_index;
 typedef signed char digit_type;
 const digit_type BASE = 10;
 
-#define MOD(x) (x % BASE < 0) ? (x % BASE) + BASE : x % BASE
-#define XOR(A,B) A ? !B : B
-#define NUM_RANGE(c) (c >= '0' && c <= '9') ? true : false
+#define MOD(x) ((x % BASE < 0) ? ((x % BASE) + BASE) : (x % BASE))
+#define XOR(A,B) (A ? !B : B)
+#define NUM_RANGE(c) ((c >= '0' && c <= '9') ? true : false)
 
 const unsigned INT_32_LEN = 32;
 const signed char NUM_DELIM = -1;
@@ -420,11 +421,3 @@ void for_loop(big_num_p start, big_num_p incr, big_num_p end,
 
         free_big_num(i);
 }
-
-/*
-digit_type mod(digit_type dig)
-{
-        digit_type result = dig % BASE;
-        return (result < 0) ? result + BASE : result;
-}
-*/
