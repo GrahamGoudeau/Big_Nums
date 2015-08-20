@@ -1,19 +1,13 @@
 CXX = clang
 OPTIM = -O0
 FLAGS= -c -g ${OPTIM} -Wall -Wextra -Werror -Wfatal-errors -std=c99 -pedantic
-RM = rm -f
-PROG_NAME = calculator
+RM = rm -fv
+PROG_NAME = big_num_test_suite
 
 all: ${PROG_NAME}
 
-clean: 
+clean:
 	${RM} ${PROG_NAME} *.o
-
-calc.o: calc.c calc.h
-	${CXX} ${FLAGS} calc.c -o $@
-
-parse.o: parse.c parse.h
-	${CXX} ${FLAGS} parse.c -o $@
 
 big_num.o: big_num.c big_num.h
 	${CXX} ${FLAGS} big_num.c -o $@
@@ -21,5 +15,5 @@ big_num.o: big_num.c big_num.h
 main.o: main.c
 	${CXX} ${FLAGS} main.c -o $@
 
-${PROG_NAME}: main.o calc.o parse.o big_num.o
+${PROG_NAME}: main.o big_num.o
 	${CXX} -g $^ -o $@
